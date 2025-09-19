@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package catalog;
+
+message SearchRequest {
+  string search = 1;
+}
+
+message GetProductsRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  string category = 3;
+  string sort = 4;
+}
+
+message GetCategoriesRequest {}
+
+message CategoryResponse {
+  string id = 1;
+  string category = 2;
+}
+
+message ProductResponse {
+  string id = 1;
+  string productId = 2;
+  string name = 3;
+  string title = 4;
+  double price = 5;
+  int32 quantity = 6;
+  string category = 7;
+  string imageUrl = 8;
+  bool inStock = 9;
+}
+
+message ErrorDetail {
+  string field = 1;
+  string message = 2;
+}
+
+message ErrorsList {
+  repeated ErrorDetail errors = 1;
+}
+
+message ProductListResponse {
+  repeated ProductResponse products = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 limit = 4;
+  int32 totalPages = 5;
+}
+
+message CategoryListResponse {
+  repeated string categories = 1;
+}
+
+service CatalogService {
+  rpc SearchProducts (SearchRequest) returns (ProductListResponse);
+
+  rpc GetProducts (GetProductsRequest) returns (ProductListResponse);
+
+  rpc GetCategories (GetCategoriesRequest) returns (CategoryListResponse);
+}

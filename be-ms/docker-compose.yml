@@ -1,0 +1,100 @@
+services:
+  user-db:
+    image: mongo:7
+    container_name: user_db
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: user_db
+    volumes:
+      - user_data:/data/db
+    networks:
+      - microservices-network
+
+  order-db:
+    image: mongo:7
+    container_name: order_db
+    ports:
+      - "27019:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: order_db
+    volumes:
+      - order_data:/data/db
+    networks:
+      - microservices-network
+
+  catalog-db:
+    image: mongo:7
+    container_name: catalog_db
+    ports:
+      - "27020:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: catalog_db
+    volumes:
+      - catalog_data:/data/db
+    networks:
+      - microservices-network
+
+  product-db:
+    image: mongo:7
+    container_name: product_db
+    ports:
+      - "27021:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: product_db
+    volumes:
+      - product_data:/data/db
+    networks:
+      - microservices-network
+
+  auth-db:
+    image: mongo:7
+    container_name: auth_db
+    ports:
+      - "27022:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: auth_db
+    volumes:
+      - auth_data:/data/db
+    networks:
+      - microservices-network
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - microservices-network
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    networks:
+      - microservices-network
+
+volumes:
+  user_data:
+  order_data:
+  catalog_data:
+  product_data:
+  auth_data:
+  grafana_data:
+
+networks:
+  microservices-network:
+    driver: bridge

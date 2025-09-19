@@ -1,0 +1,34 @@
+{
+  "name": "microservices-backend",
+  "version": "1.0.0",
+  "description": "Microservices backend with separate databases",
+  "scripts": {
+    "dev": "chmod +x start-services.sh && ./start-services.sh",
+    "start:dbs": "docker-compose up -d auth-db user-db order-db catalog-db product-db",
+    "stop:dbs": "docker-compose down",
+    "start:services": "concurrently --names \"GATEWAY,AUTH,USER,ORDER,CATALOG,PRODUCT\" --prefix-colors \"blue,cyan,green,yellow,magenta,red\" --kill-others-on-fail \"cd services/gateway && npm run dev\" \"cd services/auth-service && npm run dev\" \"cd services/user-service && npm run dev\" \"cd services/order-service && npm run dev\" \"cd services/catalog-service && npm run dev\" \"cd services/product-service && npm run dev\"",
+    "logs": "docker-compose logs -f",
+    "status": "docker-compose ps",
+    "clean": "docker-compose down -v --remove-orphans",
+    "reset": "docker-compose down -v --remove-orphans && docker-compose up -d",
+    "seed": "ts-node scripts/seedDb.ts",
+    "proto:generate": "npm run proto:clean && npm run proto:ts",
+    "proto:clean": "rimraf rpc-protos/generated/* || true",
+    "proto:ts": "protoc --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=rpc-protos/generated --ts_proto_opt=outputServices=grpc-js,useOptionals=messages,esModuleInterop=true,forceLong=string --proto_path=rpc-protos/proto rpc-protos/proto/*.proto"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/node": "^24.3.1",
+    "concurrently": "^8.2.2",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "ts-proto": "^2.7.7",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.13.4",
+    "@grpc/proto-loader": "^0.8.0",
+    "bcrypt": "^6.0.0",
+    "mongoose": "^8.18.0"
+  }
+}

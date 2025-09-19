@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package product;
+
+message Product {
+  string name = 1;
+  string productId = 2;
+  string description = 3;
+  double price = 4;
+  int32 quantity = 5;
+  string category = 6;
+  string imageUrl = 7;
+  bool inStock = 8;
+  string createdAt = 9;
+  string updatedAt = 10;
+}
+
+message ProductPayload {
+  string description = 1;
+  string name = 2;
+  double price = 3;
+  int32 quantity = 4;
+  string category = 5;
+  string imageUrl = 6;
+}
+
+message GetProductByIdRequest {
+  string productId = 1;
+}
+
+message GetProductByIdResponse {
+  Product product = 1;
+}
+
+message CreateProductRequest {
+  ProductPayload product = 1;
+}
+
+message CreateProductResponse {
+  Product product = 1;
+}
+
+message UpdateProductRequest {
+  string productId = 1;
+  ProductPayload product = 2;
+}
+
+message UpdateProductResponse {
+  Product product = 1;
+}
+
+message DeleteProductRequest {
+  string productId = 1;
+}
+
+message DeleteProductResponse {
+  string message = 1;
+}
+
+service ProductService {
+  rpc GetProductById(GetProductByIdRequest) returns (GetProductByIdResponse);
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse);
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
+  rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
+}

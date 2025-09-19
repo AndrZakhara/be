@@ -1,0 +1,216 @@
+openapi: 3.0.0
+info:
+  title: Order API
+  version: 1.0.0
+  description: API for managing orders
+paths:
+  /order/list:
+    get:
+      tags:
+        - Order
+      summary: Get all orders
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+  /order/list/customer/{id}:
+    get:
+      tags:
+        - Order
+      summary: Get all orders by customer ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of orders for the customer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+        "400":
+          description: Invalid customer ID
+  /order:
+    post:
+      tags:
+        - Order
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          description: Invalid order data
+  /order/{id}:
+    get:
+      tags:
+        - Order
+      summary: Get order by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          description: Invalid order ID
+        "404":
+          description: Order not found
+    put:
+      tags:
+        - Order
+      summary: Update order by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "200":
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          description: Invalid order data or ID
+        "404":
+          description: Order not found
+    delete:
+      tags:
+        - Order
+      summary: Delete order by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order deleted successfully
+        "400":
+          description: Invalid order ID
+        "404":
+          description: Order not found
+
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "64d5f9c4b3c2e2a1d3f7e8b1"
+        user:
+          type: string
+          example: "64d5f9c4b3c2e2a1d3f7e8a9"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                example: "64d5f9c4b3c2e2a1d3f7e8c3"
+              quantity:
+                type: integer
+                example: 2
+        totalPrice:
+          type: number
+          example: 120.5
+        delivery:
+          type: object
+          properties:
+            address:
+              type: string
+              example: "123 Main Street"
+            service:
+              type: string
+              enum: ["delivery", "self pickup"]
+              example: "delivery"
+        paymentMethod:
+          type: string
+          enum: ["card", "cash", "bank_transfer"]
+          example: "card"
+        status:
+          type: string
+          enum: ["pending", "processing", "shipped", "delivered", "cancelled"]
+          example: "pending"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-08-14T12:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-08-14T12:30:00Z"
+    OrderInput:
+      type: object
+      properties:
+        user:
+          type: string
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+              quantity:
+                type: integer
+        totalPrice:
+          type: number
+        delivery:
+          type: object
+          properties:
+            address:
+              type: string
+            service:
+              type: string
+              enum: ["delivery", "self pickup"]
+        paymentMethod:
+          type: string
+          enum: ["card", "cash", "bank_transfer"]
+        status:
+          type: string
+          enum: ["pending", "processing", "shipped", "delivered", "cancelled"]
+      required:
+        - user
+        - products
+        - totalPrice
+        - delivery
+        - paymentMethod

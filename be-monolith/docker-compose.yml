@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: mongo_monolith_com
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - microservices-network
+    mem_limit: 512m
+    cpus: 0.5
+
+  monolith:
+    build: .
+    container_name: monolith_app
+    ports:
+      - "8000:8000"
+    environment:
+      MONGO_URI: "mongodb://root:example@mongodb:27017/shop_monolith?authSource=admin"
+      NODE_ENV: development
+    depends_on:
+      - mongodb
+    networks:
+      - microservices-network
+    mem_limit: 256m
+    cpus: 0.5
+
+volumes:
+  mongo_data: {}
+
+networks:
+  microservices-network:
+    driver: bridge

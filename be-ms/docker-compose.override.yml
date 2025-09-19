@@ -1,0 +1,44 @@
+services:
+  gateway:
+    build: ./services/gateway
+    ports:
+      - "8030:8030"
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+    environment:
+      - NODE_ENV=stage
+    networks:
+      - microservices-network
+
+  product1:
+    build: ./services/product-service
+    ports:
+      - "50052:50052"
+      - "9101:9091"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+    environment:
+      - NODE_ENV=stage
+    networks:
+      - microservices-network
+
+  product2:
+    build: ./services/product-service
+    ports:
+      - "50056:50052"
+      - "9102:9091"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+    environment:
+      - NODE_ENV=stage
+    networks:
+      - microservices-network
